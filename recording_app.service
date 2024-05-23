@@ -1,0 +1,14 @@
+[Unit]
+Description=Python Application to record videos
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/ubuntu/
+ExecStart=/usr/bin/python3 /home/ubuntu/recording_app.py
+Restart=always
+StandardOutput=append:/home/ubuntu/recording_app.log
+StandardError=append:/home/ubuntu/recording_app.err
+
+[Install]
+WantedBy=multi-user.target

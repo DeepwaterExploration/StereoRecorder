@@ -1,0 +1,14 @@
+{
+    "cam1": {
+        "enabled": true,
+        "frameWidth": 1600,
+        "framerate": 60,
+        "dev": 0
+    },
+    "cam2": {
+        "enabled": true,
+        "frameWidth": 1600,
+        "framerate": 60,
+        "dev": 2
+    }
+}
