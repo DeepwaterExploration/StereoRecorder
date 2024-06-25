@@ -1,0 +1,73 @@
+{
+    "usb-0000:00:14.0-8.3": {
+        "name": "exploreHD USB Camera: exploreHD",
+        "device_index": 2,
+        "formats": [
+            {
+                "pixelformat": "Motion-JPEG",
+                "resolutions": [
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 1080,
+                        "width": 1920
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 720,
+                        "width": 1280
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 600,
+                        "width": 800
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 480,
+                        "width": 640
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 360,
+                        "width": 640
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 288,
+                        "width": 352
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 240,
+                        "width": 320
+                    }
+                ]
+            },
+            {
+                "pixelformat": "YUYV 4:2:2",
+                "resolutions": [
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 480,
+                        "width": 640
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 360,
+                        "width": 640
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 288,
+                        "width": 352
+                    },
+                    {
+                        "fps": [ 30, 25, 20 ],
+                        "height": 240,
+                        "width": 320
+                    }
+                ]
+            }
+        ]
+    }
+}
