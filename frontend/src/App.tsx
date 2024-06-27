@@ -1,63 +1,49 @@
 import './App.css'
 import React, { useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
-import { Box, CircularProgress, Container, CssBaseline, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, CssBaseline, Grid, Tab, Tabs, Typography } from '@mui/material';
 import CameraCard from './components/CameraList';
-import { fetchCameraData } from './api/camera';
-
-interface Resolution {
-  width: number;
-  height: number;
-  fps: number[];
-}
-
-interface Format {
-  pixelformat: string;
-  resolutions: Resolution[];
-}
-
-interface Camera {
-  name: string;
-  device_index: number;
-  formats: Format[];
-}
+import { BACKEND_URL, Camera, fetchCameraData, fetchVideoFiles } from './api/backend';
+import FolderList from './components/FolderList';
 
 const App: React.FC = () => {
 
   const [cameraData, setCameraData] = useState<Record<string, Camera> | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [videoFiles, setVideoFiles] = useState<string[]>([]);
 
-    useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const data = await fetchCameraData();
-              setCameraData(data);
-              setLoading(false);
-          } catch (error) {
-              setError('Failed to fetch camera data');
-              setLoading(false);
-          }
-      };
+  const updateVideoFiles = async () => {
+    try {
+      const data = await fetchVideoFiles();
+      setVideoFiles(data);
+    } catch (error) {
+        console.error('Error fetching video files:', error);
+    }
+  };
 
-      fetchData();
+  // fetch camera data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+          const data = await fetchCameraData();
+          setCameraData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
   }, []);
 
-  if (loading) {
-      return (
-          <Container>
-              <CircularProgress />
-          </Container>
-      );
-  }
-
-  if (error) {
-      return (
-          <Container>
-              <Typography color="error">{error}</Typography>
-          </Container>
-      );
-  }
+  // fetch video files data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await updateVideoFiles();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <CssBaseline>
@@ -109,7 +95,8 @@ const App: React.FC = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "start",
-            alignItems: "center"
+            alignItems: "center",
+            borderTop: "solid #46bae7"
           }}>
             <Tabs>
               <Tab label="Multi-Cam Recording"/>
@@ -125,9 +112,30 @@ const App: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "start",
-          alignItems: "center"
+          alignItems: "center",
+          borderLeft: "solid #46bae7"
         }}>
-          
+          <Typography variant="h6" sx={{marginTop:"1rem"}}>
+              File List
+          </Typography>
+
+          <Box sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+          }}>
+              <Button variant='contained' color='success' onClick={() => {
+                updateVideoFiles()
+              }}>
+                Refresh
+              </Button>
+              <Button variant='contained'>
+                Download All
+              </Button>
+          </Box>
+          <FolderList files={videoFiles} backendUrl={BACKEND_URL}/>
         </Box>
         
       </Box>
