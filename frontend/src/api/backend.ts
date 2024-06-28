@@ -9,10 +9,9 @@ pixelformat: string;
 resolutions: Resolution[];
 }
 
-export interface Camera {
-name: string;
-device_index: number;
-formats: Format[];
+export interface Device {
+    name: string;
+    formats: Format[];
 }
 
 export const BACKEND_URL = "http://localhost:8669"
