@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
 import { Box, Button, CssBaseline, Grid, Tab, Tabs, Typography } from '@mui/material';
 import CameraCard from './components/CameraList';
-import { BACKEND_URL, Camera, fetchCameraData, fetchVideoFiles } from './api/backend';
+import { BACKEND_URL, Devices, fetchCameraData, fetchVideoFiles } from './api/backend';
 import FolderList from './components/FolderList';
 
 const App: React.FC = () => {
 
-  const [cameraData, setCameraData] = useState<Record<string, Camera> | null>(null);
+  const [cameraData, setCameraData] = useState<Devices | null>(null);
   const [videoFiles, setVideoFiles] = useState<string[]>([]);
 
   const updateVideoFiles = async () => {
@@ -25,6 +25,7 @@ const App: React.FC = () => {
     const fetchData = async () => {
       try {
           const data = await fetchCameraData();
+          console.log(data);
           setCameraData(data);
       } catch (error) {
         console.error(error);
@@ -83,8 +84,8 @@ const App: React.FC = () => {
               }}
             >
               {cameraData &&
-                Object.entries(cameraData).map(([cameraName, camera], index) => (
-                    <CameraCard key={index} cameraName={cameraName} camera={camera} />
+                Object.entries(cameraData).map(([bus_info, device], index) => (
+                    <CameraCard key={index} bus_info={bus_info} device={device} />
               ))} 
             </Grid>
           </Box>
