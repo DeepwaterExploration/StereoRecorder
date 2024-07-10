@@ -28,5 +28,5 @@ class CommandHandler:
             except subprocess.TimeoutExpired:
                 process.kill()
                 process.communicate()
-            self.process = None
+        self.process = None
         return True

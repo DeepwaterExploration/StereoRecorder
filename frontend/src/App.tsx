@@ -1,17 +1,17 @@
 import './App.css'
 import React, { useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
-import { Box, Button, CssBaseline, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, CssBaseline, Grid, Typography } from '@mui/material';
 import CameraCard from './components/CameraList';
 import { BACKEND_URL, Devices, fetchCameraData, fetchVideoFiles } from './api/backend';
-import FolderList from './components/FolderList';
+import FolderList, { FileDetail } from './components/FolderList';
 
 const App: React.FC = () => {
 
   const [cameraData, setCameraData] = useState<Devices | null>(null);
-  const [videoFiles, setVideoFiles] = useState<string[]>([]);
+  const [videoFiles, setVideoFiles] = useState<FileDetail[]>([]);
 
-  const updateVideoFiles = async () => {
+  const refreshVideoFiles = async () => {
     try {
       const data = await fetchVideoFiles();
       setVideoFiles(data);
@@ -38,7 +38,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await updateVideoFiles();
+        await refreshVideoFiles();
       } catch (error) {
         console.error(error);
       }
@@ -99,12 +99,8 @@ const App: React.FC = () => {
             alignItems: "center",
             borderTop: "solid #46bae7"
           }}>
-            <Tabs>
-              <Tab label="Multi-Cam Recording"/>
-              <Tab label="Stereo-Pair Recording "/>
-            </Tabs>
+            
           </Box>
-          
         </Box>
 
         <Box sx={{
@@ -128,7 +124,7 @@ const App: React.FC = () => {
               alignItems: "center",
           }}>
               <Button variant='contained' color='success' onClick={() => {
-                updateVideoFiles()
+                refreshVideoFiles()
               }}>
                 Refresh
               </Button>

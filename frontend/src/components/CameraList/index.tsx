@@ -3,22 +3,22 @@ import { Card, CardContent, Typography, Accordion, AccordionSummary, AccordionDe
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Device } from '../../api/backend';
 
-interface Resolution {
-    width: number;
-    height: number;
-    fps: number[];
-}
+// interface Resolution {
+//     width: number;
+//     height: number;
+//     fps: number[];
+// }
 
-interface Format {
-    pixelformat: string;
-    resolutions: Resolution[];
-}
+// interface Format {
+//     pixelformat: string;
+//     resolutions: Resolution[];
+// }
 
-interface Camera {
-    name: string;
-    device_index: number;
-    formats: Format[];
-}
+// interface Camera {
+//     name: string;
+//     device_index: number;
+//     formats: Format[];
+// }
 
 interface CameraCardProps {
     bus_info: string;

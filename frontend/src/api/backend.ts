@@ -35,7 +35,7 @@ export const fetchCameraData = async () => {
     if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
     }
-    var devices = (await response.json()) as Devices;
+    const devices = (await response.json()) as Devices;
     return devices;
 };
 
@@ -47,3 +47,29 @@ export const fetchVideoFiles = async () => {
     return response.json();
 };
 
+interface StartStereoResponse {
+    success: boolean;
+    error?: string;
+}
+
+export const startStereo = async (
+    deviceIDX1: string,
+    deviceIDX2: string,
+    width: string,
+    framerate: string
+): Promise<StartStereoResponse> => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/start_stereo/${deviceIDX1}/${deviceIDX2}/${width}/${framerate}`);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        return { success: data };
+    } catch (error) {
+        console.error('Error starting stereo:', error);
+        return { success: false };
+    }
+};

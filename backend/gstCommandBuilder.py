@@ -1,12 +1,9 @@
 import datetime
 import os
 
-def build_stereo_gst_command(output_directory, filename, width, framerate, deviceIDX1, deviceIDX2):
-    # Generate the timestamp
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+def build_stereo_gst_command(output_directory, filename, width, framerate, deviceIDX1, deviceIDX2):    
     # Construct the output file path
-    output_file = os.path.join(output_directory, f'{filename}_{timestamp}.avi')
+    output_file = os.path.join(output_directory, f'{filename}.avi')
     
     # Construct the command
     command = (

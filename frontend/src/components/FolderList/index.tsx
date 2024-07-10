@@ -1,23 +1,26 @@
 import React from 'react';
-import { IconButton, List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { Delete, Download } from '@mui/icons-material';
 
+export interface FileDetail {
+    name: string;
+    creation_date: string;
+    size: string;
+}
+
 interface FolderListProps {
-    files: string[];
+    files: FileDetail[];
     backendUrl: string;
 }
 
-// href={BACKEND_URL+'/delete/'+file}
-
 const FolderList: React.FC<FolderListProps> = ({ files, backendUrl }) => {
-
     const handleDelete = async (file: string) => {
         if (window.confirm(`Are you sure you want to delete the file: ${file}?`)) {
             try {
                 const response = await fetch(`${backendUrl}/delete/${file}`, { method: 'GET' });
                 if (response.ok) {
                     alert(`File ${file} deleted successfully.`);
-                    // window.location.reload(); // Reload the page to update the file list
+                    window.location.reload(); // Reload the page to update the file list
                 } else {
                     alert(`Failed to delete file ${file}.`);
                 }
@@ -30,26 +33,28 @@ const FolderList: React.FC<FolderListProps> = ({ files, backendUrl }) => {
 
     return (
         <>
-        <List sx={{width: "100%"}}>
-            {files.map((file, index) => (
-                <ListItem key={index} sx={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                    borderBottom: "1px solid #BBB"
-                }}>
-                    <ListItemText primary={file} />
-                    <IconButton color='error' onClick={() => handleDelete(file)}>
-                        <Delete />
-                    </IconButton>
-                    <IconButton href={backendUrl+'/download/'+file}>
-                        <Download />
-                    </IconButton>
-                </ListItem>
-            ))}
-        </List>
+            <List sx={{ width: "100%" }}>
+                {files.map((file, index) => (
+                    <ListItem key={index} sx={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        borderBottom: "1px solid #BBB"
+                    }}>
+                        <ListItemText primary={file.name} secondary={`Created on: ${file.creation_date} | Size: ${file.size}`} />
+                        <div>
+                            <IconButton color='error' onClick={() => handleDelete(file.name)}>
+                                <Delete />
+                            </IconButton>
+                            <IconButton href={`${backendUrl}/download/${file.name}`}>
+                                <Download />
+                            </IconButton>
+                        </div>
+                    </ListItem>
+                ))}
+            </List>
         </>
     );
 };

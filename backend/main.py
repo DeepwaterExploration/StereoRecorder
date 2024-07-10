@@ -13,7 +13,9 @@ import utils
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-VIDEO_DIRECTORY = f'/home/{os.getlogin()}/Videos'
+user = os.getenv('USER')
+VIDEO_DIRECTORY = f'/home/{user}/Videos/Discovery/'
+utils.dir_exists(VIDEO_DIRECTORY)
 
 stereoCommandHandler = CommandHandler()
 
@@ -25,6 +27,7 @@ def camera_info():
     for device in devices:
         setup_devices[device.bus_info] = {
             'name': device.device_name,
+            'device_paths': device.device_paths,
             'formats': {}
         }
         for path in device.device_paths:
@@ -66,31 +69,26 @@ def camera_info():
                                 format_size['intervals'].append({'numerator': frmival.discrete.numerator, 'denominator': frmival.discrete.denominator})
                         format_sizes.append(format_size)
                 setup_devices[device.bus_info]['formats'][path][utils.fourcc2s(v4l2_fmt.pixelformat)] = format_sizes
-
-
-    print(setup_devices)
     return jsonify(setup_devices)
 
-@app.route('/start_stereo', methods=['POST'])
-def start_stereo():
+@app.route('/check_stereo_recording', methods=['GET'])
+def check_stereo_recording():
+    return stereoCommandHandler.isRunning()
+
+@app.route('/start_stereo/<deviceIDX1>/<deviceIDX2>/<width>/<framerate>', methods=['GET'])
+def start_stereo(deviceIDX1, deviceIDX2, width, framerate):
     if(stereoCommandHandler.isRunning()):
         return True
     try:
-        data = request.get_json()
-        device_idx1 = data.get('deviceIDX1')
-        device_idx2 = data.get('deviceIDX2')
-        width = data.get('width')
-        framerate = data.get('framerate')
-        
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = "Stereo" + timestamp
         command = build_stereo_gst_command(
             output_directory=VIDEO_DIRECTORY,
             filename=filename,
+            deviceIDX1=deviceIDX1,
+            deviceIDX2=deviceIDX2,
             width=width,
             framerate=framerate,
-            deviceIDX1=device_idx1,
-            deviceIDX2=device_idx2
         )
         return stereoCommandHandler.start_command(command=command)
     except:
@@ -105,7 +103,14 @@ def stop_stereo():
 @app.route('/get_video_files')
 def get_video_files():
     files = os.listdir(VIDEO_DIRECTORY)
-    return jsonify(files)
+    file_info = []
+    for file in files:
+        file_path = os.path.join(VIDEO_DIRECTORY, file)
+        file_stat = os.stat(file_path)
+        creation_time = datetime.datetime.fromtimestamp(file_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
+        file_size = utils.format_size(file_stat.st_size)
+        file_info.append({'name': file, 'creation_date': creation_time, 'size': file_size})
+    return jsonify(file_info), 200
 
 @app.route('/download/<filename>')
 def download_file(filename):
