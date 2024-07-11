@@ -1,7 +1,17 @@
-import React from 'react';
-import { Card, CardContent, Typography, Accordion, AccordionSummary, AccordionDetails, List, ListItem, ListItemText } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Device } from '../../api/backend';
+import React from "react";
+import {
+    Card,
+    CardContent,
+    Typography,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    List,
+    ListItem,
+    ListItemText,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Device } from "../../api/backend";
 
 // interface Resolution {
 //     width: number;
@@ -30,36 +40,38 @@ const CameraCard: React.FC<CameraCardProps> = ({ bus_info, device }) => {
         <Card sx={{ margin: 2 }}>
             <CardContent>
                 <Typography variant="h5" component="div">
-                    {device.name}: {bus_info}
+                    {device.name}
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary">
-                    Bus ID: {device.name}
+                    Bus ID: {bus_info}
                 </Typography>
-                {
-                    Object.entries(
-                        Object.values(device.formats)[0] // only need the first camera for stellar
-                    ).map(([pixelformat, format], index) => 
-                        <Accordion key={index}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography>
-                                    {pixelformat}
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <List>
-                                    {format.map((resolution, resIndex) => (
-                                        <ListItem key={resIndex}>
-                                            <ListItemText
-                                                primary={`${resolution.width} x ${resolution.height}`}
-                                                secondary={`FPS: ${resolution.intervals.map((interval => interval.denominator)) .join(', ')}`}
-                                            />
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </AccordionDetails>
-                        </Accordion>
-                    )
-                }
+                {Object.keys(device.formats).map((devpath) =>
+                    Object.entries(device.formats[devpath]).map(
+                        ([pixelformat, format], index) => (
+                            <Accordion key={index}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                >
+                                    <Typography>
+                                        {pixelformat}: {devpath}
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <List>
+                                        {format.map((resolution, resIndex) => (
+                                            <ListItem key={resIndex}>
+                                                <ListItemText
+                                                    primary={`${resolution.width} x ${resolution.height}`}
+                                                    secondary={`FPS: ${resolution.intervals.map((interval) => interval.denominator).join(", ")}`}
+                                                />
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </AccordionDetails>
+                            </Accordion>
+                        ),
+                    ),
+                )}
             </CardContent>
         </Card>
     );
