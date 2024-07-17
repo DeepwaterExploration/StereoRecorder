@@ -99,7 +99,10 @@ def stop_stereo():
     if(stereoCommandHandler.isRunning()):
         return {"status":stereoCommandHandler.stop_command()}
     return {"status": True}
-
+@app.route("/start_multi", methods=["POST"])
+def start_multi():
+    paths = request.get_json()["paths"]
+    
 @app.route('/get_video_files')
 def get_video_files():
     files = os.listdir(VIDEO_DIRECTORY)

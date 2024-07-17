@@ -89,3 +89,11 @@ export const stopStereo = async (): Promise<boolean> => {
         return false;
     }
 }
+
+export const startMultiCam = async (paths: string[]): Promise<boolean> => {
+    throw Error("unimplemented")
+}
+
+export const stopMultiCam = async (): Promise<boolean> => {
+    throw Error("unimplemented")
+}

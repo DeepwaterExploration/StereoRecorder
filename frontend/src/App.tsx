@@ -1,12 +1,34 @@
 import './App.css'
 import React, { useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
-import { Box, Button, CssBaseline, Grid, Typography } from '@mui/material';
+import { Box, Button, CssBaseline, Grid, Tab, Tabs, Typography } from '@mui/material';
 import CameraCard from './components/CameraList';
 import { BACKEND_URL, Devices, fetchCameraData, fetchVideoFiles, Format, Interval } from './api/backend';
 import FolderList, { FileDetail } from './components/FolderList';
 import StitchedComponent from './components/Stitched/StitchedComponent';
 import MultiCamComponent from './components/MultiCam/MultiCamComponent';
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role='tabpanel'
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      style={{ width: "100%" }}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
 const App: React.FC = () => {
 
   const [cameraData, setCameraData] = useState<Devices>({});
@@ -17,6 +39,9 @@ const App: React.FC = () => {
   const [rightPath, setRightPath] = useState<string | null>(null);
   const [leftOptions, setLeftOptions] = useState<{ fps: number[], width: number[] }>({ fps: [], width: [] });
   const [rightOptions, setRightOptions] = useState<{ fps: number[], width: number[] }>({ fps: [], width: [] });
+
+  const [tabPanel, setTabPanel] = useState(1);
+
   const refreshVideoFiles = async () => {
     try {
       const data = await fetchVideoFiles();
@@ -92,7 +117,7 @@ const App: React.FC = () => {
     options.width = [...new Set(options.width)]
     return options;
   }
-  useEffect(() => { setPaths(getPaths); setMjpgPaths(() => getPaths(["MJPG"])) })
+  useEffect(() => { setPaths(() => getPaths(["MJPG", "H264"])); setMjpgPaths(() => getPaths(["MJPG"])) })
   // fetch camera data
   useEffect(() => {
     const fetchData = async () => {
@@ -171,24 +196,36 @@ const App: React.FC = () => {
             height: "50%",
             display: "flex",
             flexWrap: "wrap",
-            justifyContent: "start",
-            alignItems: "center",
-            borderTop: "solid #46bae7"
+            borderTop: "solid #46bae7",
+            flexDirection: "row",
           }}>
-            <Typography variant="h6" sx={{ marginTop: "1rem", width: "100%" }}>
+            <Typography variant="h6" sx={{ marginTop: "1rem", width: "100%", maxHeight: "40px" }}>
               Recording
             </Typography>
-
-            <StitchedComponent
-              paths={mjpgPaths}
-              leftPath={leftPath}
-              rightPath={rightPath}
-              setRightPath={setRightPath}
-              setLeftPath={setLeftPath}
-              leftOptions={leftOptions}
-              rightOptions={rightOptions}
-            />
-            <MultiCamComponent />
+            <Tabs
+              value={tabPanel}
+              onChange={(_event: React.SyntheticEvent, newValue: number) => {
+                setTabPanel(newValue);
+              }}
+              sx={{ width: "100%", maxHeight: "40px" }}
+            >
+              <Tab label='Stitched' value={1} />
+              <Tab label='MultiCam' value={2} />
+            </Tabs>
+            <TabPanel value={tabPanel} index={1}>
+              <StitchedComponent
+                paths={mjpgPaths}
+                leftPath={leftPath}
+                rightPath={rightPath}
+                setRightPath={setRightPath}
+                setLeftPath={setLeftPath}
+                leftOptions={leftOptions}
+                rightOptions={rightOptions}
+              />
+            </TabPanel>
+            <TabPanel value={tabPanel} index={2}>
+              <MultiCamComponent paths={paths} />
+            </TabPanel>
           </Box>
 
         </Box>

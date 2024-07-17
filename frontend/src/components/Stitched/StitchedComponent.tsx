@@ -27,35 +27,37 @@ const StitchedComponent: React.FC<Stitchedprops> = (props) => {
     const [isRecording, setIsRecording] = useState<boolean>(false);
 
     return (<Box sx={{
-        width: "50%",
+        width: "100%",
         height: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        rowGap: "10px"
     }}>
         <Typography>
-            Stitched Stitched Setup
+            Stitched Stereo Setup
         </Typography>
-        <FormControl fullWidth>
-            <InputLabel id="left-label">Left Camera Path</InputLabel>
-            <Select value={leftPath ? leftPath : ""} onChange={(e) => setLeftPath(e.target.value)} labelId='left-label'>
-                {paths.filter((e) => e !== rightPath).map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-            </Select>
-        </FormControl>
-        <FormControl fullWidth>
-            <InputLabel id="right-label">Right Camera Path</InputLabel>
-            <Select value={rightPath ? rightPath : ""} onChange={(e) => setRightPath(e.target.value)} labelId='right-label'>
-                {paths.filter((e) => e !== leftPath).map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-            </Select>
-        </FormControl>
-
+        <div style={{ display: "flex", flexDirection: "row", width: "100%", columnGap: "5px" }}>
+            <FormControl sx={{ width: "50%" }}>
+                <InputLabel id="left-label">Left Camera Path</InputLabel>
+                <Select value={leftPath ? leftPath : ""} onChange={(e) => setLeftPath(e.target.value)} labelId='left-label'>
+                    {paths.filter((e) => e !== rightPath).map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                </Select>
+            </FormControl>
+            <FormControl sx={{ width: "50%" }}>
+                <InputLabel id="right-label">Right Camera Path</InputLabel>
+                <Select value={rightPath ? rightPath : ""} onChange={(e) => setRightPath(e.target.value)} labelId='right-label'>
+                    {paths.filter((e) => e !== leftPath).map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                </Select>
+            </FormControl>
+        </div>
         <FormControl fullWidth>
             <InputLabel id="compression-label">Compression Format</InputLabel>
             <Select value="MJPG" labelId='compression-label' disabled>
                 <MenuItem value="MJPG">MJPG</MenuItem>
             </Select>
         </FormControl>
-        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%", columnGap: "5px" }}>
             <FormControl sx={{ width: "50%" }}>
                 <InputLabel id="fps-label">Frame Rate</InputLabel>
                 <Select labelId='fps-label' value={fps != 0 ? fps : ""} onChange={(e) => setFPS(() => parseInt(e.target.value as string))}>
@@ -69,25 +71,27 @@ const StitchedComponent: React.FC<Stitchedprops> = (props) => {
                 </Select>
             </FormControl>
         </div>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%", columnGap: "5px", justifyContent: "center" }}>
 
-        <Button
-            onClick={() => {
-                if (leftPath != null && rightPath != null && width != 0 && fps != 0) {
-                    startStereo(leftPath, rightPath, width.toString(), fps.toString()).then((data) => setIsRecording(data.success));
-                }
-            }}
-            disabled={isRecording}
-        >
-            Start
-        </Button>
-        <Button
-            onClick={() => {
-                stopStereo().then(() => setIsRecording(false));
-            }}
-            disabled={!isRecording}
-        >
-            Stop
-        </Button>
+            <Button
+                onClick={() => {
+                    if (leftPath != null && rightPath != null && width != 0 && fps != 0) {
+                        startStereo(leftPath, rightPath, width.toString(), fps.toString()).then((data) => setIsRecording(data.success));
+                    }
+                }}
+                disabled={isRecording}
+            >
+                Start
+            </Button>
+            <Button
+                onClick={() => {
+                    stopStereo().then(() => setIsRecording(false));
+                }}
+                disabled={!isRecording}
+            >
+                Stop
+            </Button>
+        </div>
     </Box>)
 }
 
