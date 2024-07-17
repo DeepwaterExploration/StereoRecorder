@@ -32,7 +32,7 @@ def camera_info():
         }
         for path in device.device_paths:
             setup_devices[device.bus_info]['formats'][path] = {}
-            file_object = open(path);
+            file_object = open(path)
             fd = file_object.fileno()
             for i in range(1000):
                 v4l2_fmt = v4l2.v4l2_fmtdesc()
@@ -90,15 +90,15 @@ def start_stereo(deviceIDX1, deviceIDX2, width, framerate):
             width=width,
             framerate=framerate,
         )
-        return stereoCommandHandler.start_command(command=command)
-    except:
-        return False
+        return {"status":stereoCommandHandler.start_command(command=command)}
+    except Exception as e:
+        return jsonify({"status": False, "error": e})
     
 @app.route('/stop_stereo', methods=['GET'])
 def stop_stereo():
     if(stereoCommandHandler.isRunning()):
-        return stereoCommandHandler.stop_command()
-    return True
+        return {"status":stereoCommandHandler.stop_command()}
+    return {"status": True}
 
 @app.route('/get_video_files')
 def get_video_files():

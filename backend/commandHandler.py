@@ -12,7 +12,7 @@ class CommandHandler:
     def start_command(self, command) -> bool:
         logging.debug(f"Starting command: {command}\n\n")
         try:
-            process = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(command.split())
             self.process = process
         except:
             return False
