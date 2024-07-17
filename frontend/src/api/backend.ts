@@ -73,3 +73,20 @@ export const startStereo = async (
         return { success: false };
     }
 };
+
+export const stopStereo = async (): Promise<StartStereoResponse> => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/stop_stereo`);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        return { success: data };
+    } catch (error) {
+        console.error('Error starting stereo:', error);
+        return { success: false };
+    }
+};
