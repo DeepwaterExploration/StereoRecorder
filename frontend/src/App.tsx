@@ -5,7 +5,8 @@ import { Box, Button, CssBaseline, Grid, Typography } from '@mui/material';
 import CameraCard from './components/CameraList';
 import { BACKEND_URL, Devices, fetchCameraData, fetchVideoFiles, Format, Interval } from './api/backend';
 import FolderList, { FileDetail } from './components/FolderList';
-import StitchedComponent from './components/StitchedComponent';
+import StitchedComponent from './components/Stitched/StitchedComponent';
+import MultiCamComponent from './components/MultiCam/MultiCamComponent';
 const App: React.FC = () => {
 
   const [cameraData, setCameraData] = useState<Devices>({});
@@ -187,16 +188,7 @@ const App: React.FC = () => {
               leftOptions={leftOptions}
               rightOptions={rightOptions}
             />
-            <Box sx={{
-              width: "50%",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}>
-              <Typography>
-                Multi-cam recording
-              </Typography>
-            </Box>
+            <MultiCamComponent />
           </Box>
 
         </Box>

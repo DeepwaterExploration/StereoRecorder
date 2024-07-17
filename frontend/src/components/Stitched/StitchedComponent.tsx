@@ -1,6 +1,6 @@
 import { Box, Typography, FormControl, InputLabel, Select, MenuItem, Button } from "@mui/material"
 import { useState } from "react"
-import { startStereo, stopStereo } from "../api/backend"
+import { startStereo, stopStereo } from "../../api/backend"
 
 
 interface Stitchedprops {
