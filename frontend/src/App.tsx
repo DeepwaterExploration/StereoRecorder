@@ -237,7 +237,8 @@ const App: React.FC = () => {
           flexDirection: "column",
           justifyContent: "start",
           alignItems: "center",
-          borderLeft: "solid #46bae7"
+          borderLeft: "solid #46bae7",
+          overflow: "scroll"
         }}>
           <Typography variant="h6" sx={{ marginTop: "1rem" }}>
             File List
