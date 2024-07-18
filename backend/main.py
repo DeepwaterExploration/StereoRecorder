@@ -4,6 +4,7 @@ import shutil
 from flask import Flask, jsonify, redirect, request, send_from_directory, url_for
 from flask_cors import CORS
 from commandHandler import CommandHandler
+from multicam import multiCamManager
 from gstCommandBuilder import build_stereo_gst_command
 from enumeration import list_devices
 import fcntl
@@ -18,9 +19,9 @@ VIDEO_DIRECTORY = f'/home/{user}/Videos/Discovery/'
 utils.dir_exists(VIDEO_DIRECTORY)
 
 stereoCommandHandler = CommandHandler()
+multicamCommandHandler = multiCamManager()
 
-@app.route('/cameras', methods=['GET'])
-def camera_info():
+def get_devices():
     devices = list_devices()
 
     setup_devices = {}
@@ -69,6 +70,18 @@ def camera_info():
                                 format_size['intervals'].append({'numerator': frmival.discrete.numerator, 'denominator': frmival.discrete.denominator})
                         format_sizes.append(format_size)
                 setup_devices[device.bus_info]['formats'][path][utils.fourcc2s(v4l2_fmt.pixelformat)] = format_sizes
+    return setup_devices
+def get_all_formats():
+    setup_devices = get_devices()
+    paths = {}
+    for device_bus_info, device_info in setup_devices.items():
+        
+        for path, formats in device_info['formats'].items():
+            paths[path] = list(formats.keys())
+    return paths
+@app.route('/cameras', methods=['GET'])
+def camera_info():
+    setup_devices = get_devices()
     return jsonify(setup_devices)
 
 @app.route('/check_stereo_recording', methods=['GET'])
@@ -102,7 +115,22 @@ def stop_stereo():
 @app.route("/start_multi", methods=["POST"])
 def start_multi():
     paths = request.get_json()["paths"]
+    fmts=get_all_formats()
+
+    path_fmt_zip = []
+    for path in paths:
+        cam_formats = list(filter(lambda x: (x == "H264" or x == "MJPG"), fmts[path]))
+        print(path,cam_formats)
+        path_fmt_zip.append([path, cam_formats[0]])
     
+    multicamCommandHandler.start_cameras(paths_format_zip=path_fmt_zip, width=request.get_json()["width"], name=request.get_json()["filename"], fps=request.get_json()["fps"], save_dir=VIDEO_DIRECTORY)
+    
+
+    return jsonify({})
+@app.route("/stop_multi")
+def stop_multi():
+    multicamCommandHandler.stop_camera()
+    return jsonify({})
 @app.route('/get_video_files')
 def get_video_files():
     files = os.listdir(VIDEO_DIRECTORY)
@@ -142,4 +170,4 @@ def delete_all():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8669)
+    app.run(host='0.0.0.0', port=8669, debug=True)

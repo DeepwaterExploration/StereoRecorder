@@ -90,10 +90,38 @@ export const stopStereo = async (): Promise<boolean> => {
     }
 }
 
-export const startMultiCam = async (paths: string[]): Promise<boolean> => {
-    throw Error("unimplemented")
+export const startMultiCam = async (paths: string[], width: number, framerate: number, filename: string): Promise<boolean> => {
+    try {
+        const config: RequestInit = {
+
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                paths: paths,
+                width: width,
+                filename: filename,
+                fps: framerate
+            })
+        }
+        const response = await fetch(`${BACKEND_URL}/start_multi`, config);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return true;
+    } catch {
+        return false
+    }
 }
 
+
 export const stopMultiCam = async (): Promise<boolean> => {
-    throw Error("unimplemented")
+    try {
+        const response = await fetch(`${BACKEND_URL}/stop_multi`)
+        if (!response.ok) {
+            throw new Error('Network response was not ok' + response.statusText);
+        }
+        return true
+    } catch {
+        return false
+    }
 }

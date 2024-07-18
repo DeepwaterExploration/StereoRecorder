@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { startStereo, stopStereo } from "../../api/backend";
+import { startMultiCam, startStereo, stopMultiCam, stopStereo } from "../../api/backend";
 
 interface camProps {
     paths: string[]
@@ -11,20 +11,13 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
     const [fps, setFPS] = useState(0);
     const [width, setWidth] = useState(0);
 
-    const [filename, setFilename] = useState("multicam-$id");
+    const [filename, setFilename] = useState("multicam-$id-$format");
 
     const [isRecording, setIsRecording] = useState<boolean>(false);
 
 
     const validFPS = [10, 20, 30];
     const validWidth = [1920];
-    function startMultiCam(paths: string[]) {
-        throw new Error("Function not implemented.");
-    }
-
-    function stopMultiCam() {
-        throw new Error("Function not implemented.");
-    }
 
     return (<Box sx={{
         width: "100%",
@@ -65,8 +58,8 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
 
             <Button
                 onClick={() => {
-                    startMultiCam(props.paths)
-                    // .then(() => setIsRecording(false))
+                    startMultiCam(props.paths, width, fps, filename)
+                        .then(() => setIsRecording(true))
                 }}
                 disabled={isRecording}
             >
@@ -75,7 +68,7 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
             <Button
                 onClick={() => {
                     stopMultiCam()
-                    // .then(() => setIsRecording(false));
+                        .then(() => setIsRecording(false));
                 }}
                 disabled={!isRecording}
             >
