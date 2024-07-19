@@ -1,23 +1,35 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { startMultiCam, startStereo, stopMultiCam, stopStereo } from "../../api/backend";
+import NumberInput from './NumberInput.tsx';
+import { checkMulti, startMultiCam, stopMultiCam } from "../../api/backend";
 
 interface camProps {
     paths: string[]
 }
 
 const MultiCamComponent: React.FC<camProps> = (props) => {
+    const validFPS = [30, 20, 10];
+    const validWidth = [1920];
+    const [fps, setFPS] = useState(validFPS[0]);
+    const [width, setWidth] = useState(validWidth[0]);
 
-    const [fps, setFPS] = useState(0);
-    const [width, setWidth] = useState(0);
-
-    const [filename, setFilename] = useState("multicam-$id-$format");
+    const [filename, setFilename] = useState("multicam-$id-$format-$count");
 
     const [isRecording, setIsRecording] = useState<boolean>(false);
+    const [compression, setCompression] = useState<"MJPG" | "H264">("MJPG");
 
 
-    const validFPS = [10, 20, 30];
-    const validWidth = [1920];
+    const [duration, setDuration] = useState(1);
+    const [interval, setInterval] = useState(1);
+
+
+    const validFormats = ["MJPG", "H264"]
+
+    useState(() => {
+        checkMulti().then(
+            (x) => { console.log("SterMultieo Recording: ", x), setIsRecording(x) }
+        )
+    })
 
     return (<Box sx={{
         width: "100%",
@@ -29,7 +41,7 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
         justifyContent: "start"
     }}>
         <Typography>
-            Multi-cam recording
+            Multi-cam interval recording
         </Typography>
         <div style={{ display: "flex", flexDirection: "row", width: "100%", columnGap: "5px" }}>
             <FormControl sx={{ width: "50%" }}>
@@ -44,6 +56,29 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
                     {validWidth.map((fw) => <MenuItem key={fw} value={fw.toString()}>{fw}</MenuItem>)}
                 </Select>
             </FormControl>
+            <FormControl sx={{ width: "50%" }}>
+                <InputLabel id="fw-label">Compression Format</InputLabel>
+                <Select labelId='fw-label' value={compression} onChange={(e) => setCompression(() => e.target.value as "H264" | "MJPG")}>
+                    {validFormats.map((fmt) => <MenuItem key={fmt} value={fmt}>{fmt}</MenuItem>)}
+                </Select>
+            </FormControl>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%", columnGap: "5px" }}>
+            <Typography sx={{ verticalAlign: "center", height: "100%", display: "block" }}>
+                Take a
+            </Typography>
+            <NumberInput value={duration} onChange={(e, newVal) => setDuration(newVal!)}>
+
+            </NumberInput>
+            <Typography>
+                Min clip every
+            </Typography>
+            <NumberInput value={interval} onChange={(e, newVal) => setInterval(newVal!)}>
+
+            </NumberInput>
+            <Typography>
+                Mins
+            </Typography>
         </div>
         <TextField
             value={filename}
@@ -52,13 +87,13 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
         />
 
         <Typography>
-            Camera to record: {props.paths.length}
+            Total Possible Cameras: {props.paths.length}
         </Typography>
         <div style={{ display: "flex", flexDirection: "row", width: "100%", columnGap: "5px", justifyContent: "center" }}>
 
             <Button
                 onClick={() => {
-                    startMultiCam(props.paths, width, fps, filename)
+                    startMultiCam(props.paths, width, fps, filename, duration, interval, compression)
                         .then(() => setIsRecording(true))
                 }}
                 disabled={isRecording}

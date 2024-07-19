@@ -210,7 +210,7 @@ const App: React.FC = () => {
               sx={{ width: "100%", maxHeight: "40px" }}
             >
               <Tab label='Stitched' value={1} />
-              <Tab label='MultiCam' value={2} />
+              <Tab label='Multi-Cam interval' value={2} />
             </Tabs>
             <TabPanel value={tabPanel} index={1}>
               <StitchedComponent

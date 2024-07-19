@@ -86,12 +86,12 @@ def camera_info():
 
 @app.route('/check_stereo_recording', methods=['GET'])
 def check_stereo_recording():
-    return stereoCommandHandler.isRunning()
+    return {"status":stereoCommandHandler.isRunning()}
 
 @app.route('/start_stereo/<deviceIDX1>/<deviceIDX2>/<width>/<framerate>', methods=['GET'])
 def start_stereo(deviceIDX1, deviceIDX2, width, framerate):
     if(stereoCommandHandler.isRunning()):
-        return True
+        return jsonify({"status":True})
     try:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = "Stereo" + timestamp
@@ -114,16 +114,25 @@ def stop_stereo():
     return {"status": True}
 @app.route("/start_multi", methods=["POST"])
 def start_multi():
-    paths = request.get_json()["paths"]
+    rjson = request.get_json()
+    paths = rjson["paths"]
     fmts=get_all_formats()
 
     path_fmt_zip = []
     for path in paths:
-        cam_formats = list(filter(lambda x: (x == "H264" or x == "MJPG"), fmts[path]))
-        print(path,cam_formats)
-        path_fmt_zip.append([path, cam_formats[0]])
+        cam_formats = list(filter(lambda x: x==rjson["format"], fmts[path]))
+        if len(cam_formats) > 0:
+            path_fmt_zip.append([path, cam_formats[0]])
     
-    multicamCommandHandler.start_cameras(paths_format_zip=path_fmt_zip, width=request.get_json()["width"], name=request.get_json()["filename"], fps=request.get_json()["fps"], save_dir=VIDEO_DIRECTORY)
+    multicamCommandHandler.start_cameras(
+        paths_format_zip=path_fmt_zip, 
+        width=rjson["width"], 
+        name=rjson["filename"], 
+        fps=rjson["fps"], 
+        save_dir=VIDEO_DIRECTORY,
+        duration=rjson["duration"],
+        interval=rjson["interval"]
+    )
     
 
     return jsonify({})
@@ -131,6 +140,9 @@ def start_multi():
 def stop_multi():
     multicamCommandHandler.stop_camera()
     return jsonify({})
+@app.route("/check_multicam_recording")
+def check_multicam_recording():
+    return {"status": multicamCommandHandler.recording }
 @app.route('/get_video_files')
 def get_video_files():
     files = os.listdir(VIDEO_DIRECTORY)
@@ -170,4 +182,4 @@ def delete_all():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8669, debug=True)
+    app.run(host='0.0.0.0', port=8669)

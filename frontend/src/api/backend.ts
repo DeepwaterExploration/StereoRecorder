@@ -85,12 +85,26 @@ export const stopStereo = async (): Promise<boolean> => {
 
         return true;
     } catch (error) {
-        console.error('Error stoppin stereo:', error);
+        console.error('Error stopping stereo:', error);
         return false;
     }
 }
 
-export const startMultiCam = async (paths: string[], width: number, framerate: number, filename: string): Promise<boolean> => {
+export const checkStereo = async (): Promise<boolean> => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/check_stereo_recording`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const json = await response.json();
+        return json['status'] as boolean
+    } catch (error) {
+        console.error('error checking stereo', error);
+        return false;
+    }
+}
+
+export const startMultiCam = async (paths: string[], width: number, framerate: number, filename: string, duration: number, interval: number, format: "H264" | "MJPG"): Promise<boolean> => {
     try {
         const config: RequestInit = {
 
@@ -100,7 +114,10 @@ export const startMultiCam = async (paths: string[], width: number, framerate: n
                 paths: paths,
                 width: width,
                 filename: filename,
-                fps: framerate
+                fps: framerate,
+                interval: interval,
+                duration: duration,
+                format: format
             })
         }
         const response = await fetch(`${BACKEND_URL}/start_multi`, config);
@@ -123,5 +140,19 @@ export const stopMultiCam = async (): Promise<boolean> => {
         return true
     } catch {
         return false
+    }
+}
+
+export const checkMulti = async (): Promise<boolean> => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/check_multicam_recording`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const json = await response.json();
+        return json['status'] as boolean
+    } catch (error) {
+        console.error('error checking stereo', error);
+        return false;
     }
 }

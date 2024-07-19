@@ -1,6 +1,6 @@
 import { Box, Typography, FormControl, InputLabel, Select, MenuItem, Button } from "@mui/material"
 import { useState } from "react"
-import { startStereo, stopStereo } from "../../api/backend"
+import { checkStereo, startStereo, stopStereo } from "../../api/backend"
 
 
 interface Stitchedprops {
@@ -25,6 +25,11 @@ const StitchedComponent: React.FC<Stitchedprops> = (props) => {
     const [width, setWidth] = useState<number>(validWidth[0] ? validWidth[0] : 0)
 
     const [isRecording, setIsRecording] = useState<boolean>(false);
+    useState(() => {
+        checkStereo().then(
+            (x) => { console.log("Stereo Recording: ", x), setIsRecording(x) }
+        )
+    })
 
     return (<Box sx={{
         width: "100%",
