@@ -1,4 +1,3 @@
-import datetime
 import os
 
 def build_stereo_gst_command(output_directory, filename, width, framerate, deviceIDX1, deviceIDX2):    

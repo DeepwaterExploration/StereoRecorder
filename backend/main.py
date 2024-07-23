@@ -71,6 +71,7 @@ def get_devices():
                         format_sizes.append(format_size)
                 setup_devices[device.bus_info]['formats'][path][utils.fourcc2s(v4l2_fmt.pixelformat)] = format_sizes
     return setup_devices
+
 def get_all_formats():
     setup_devices = get_devices()
     paths = {}
@@ -79,6 +80,7 @@ def get_all_formats():
         for path, formats in device_info['formats'].items():
             paths[path] = list(formats.keys())
     return paths
+
 @app.route('/cameras', methods=['GET'])
 def camera_info():
     setup_devices = get_devices()
@@ -112,6 +114,7 @@ def stop_stereo():
     if(stereoCommandHandler.isRunning()):
         return {"status":stereoCommandHandler.stop_command()}
     return {"status": True}
+
 @app.route("/start_multi", methods=["POST"])
 def start_multi():
     rjson = request.get_json()
@@ -133,16 +136,18 @@ def start_multi():
         duration=rjson["duration"],
         interval=rjson["interval"]
     )
-    
 
     return jsonify({})
+
 @app.route("/stop_multi")
 def stop_multi():
     multicamCommandHandler.stop_camera()
     return jsonify({})
+
 @app.route("/check_multicam_recording")
 def check_multicam_recording():
     return {"status": multicamCommandHandler.recording }
+
 @app.route('/get_video_files')
 def get_video_files():
     files = os.listdir(VIDEO_DIRECTORY)
