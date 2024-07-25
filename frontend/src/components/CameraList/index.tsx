@@ -40,7 +40,7 @@ const CameraCard: React.FC<CameraCardProps> = ({ bus_info, device }) => {
     <Card sx={{ margin: 2 }}>
       <CardContent>
         <Typography variant="h5" component="div">
-          {device.name}
+          {device.name.split(":")[0]}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary">
           Bus ID: {bus_info}

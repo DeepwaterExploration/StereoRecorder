@@ -49,7 +49,10 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
         justifyContent: "start",
       }}
     >
-      <Typography>This mode will record all cameras that are compatible with the specified settings.</Typography>
+      <Typography>
+        This mode will record all cameras that are compatible with the specified
+        settings.
+      </Typography>
       <Box
         sx={{
           display: "flex",
@@ -75,7 +78,9 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
         <Select
           value={width != 0 ? width : ""}
           onChange={(e) => setWidth(() => parseInt(e.target.value as string))}
-          startAdornment={<InputAdornment position="start">Frame Width</InputAdornment>}
+          startAdornment={
+            <InputAdornment position="start">Frame Width</InputAdornment>
+          }
         >
           {validWidth.map((fw) => (
             <MenuItem key={fw} value={fw.toString()}>
@@ -86,7 +91,9 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
 
         <Select
           value={compression}
-          startAdornment={<InputAdornment position="start">Compression</InputAdornment>}
+          startAdornment={
+            <InputAdornment position="start">Compression</InputAdornment>
+          }
           onChange={(e) =>
             setCompression(() => e.target.value as "H264" | "MJPG")
           }
@@ -112,9 +119,13 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
           label="Recording Length"
           type="number"
           value={duration}
-          onChange={(e) => {setDuration(parseInt(e.target.value))}}
+          onChange={(e) => {
+            setDuration(parseInt(e.target.value));
+          }}
           InputProps={{
-            endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
+            endAdornment: (
+              <InputAdornment position="end">minutes</InputAdornment>
+            ),
           }}
         />
 
@@ -123,9 +134,13 @@ const MultiCamComponent: React.FC<camProps> = (props) => {
           label="Interval Length"
           type="number"
           value={interval}
-          onChange={(e) => {setInterval(parseInt(e.target.value))}}
+          onChange={(e) => {
+            setInterval(parseInt(e.target.value));
+          }}
           InputProps={{
-            endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
+            endAdornment: (
+              <InputAdornment position="end">minutes</InputAdornment>
+            ),
           }}
         />
       </Box>

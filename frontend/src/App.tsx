@@ -21,7 +21,6 @@ import {
 } from "./api/backend";
 import FolderList, { FileDetail } from "./components/FolderList";
 import StitchedComponent from "./components/Stitched";
-import MultiCamComponent from "./components/MultiCam";
 
 // Extracted constants
 const TAB_PANEL_STITCHED = 1;
@@ -99,7 +98,7 @@ const App: React.FC = () => {
       const device = cameraData[cam];
       if (
         CAMERA_NAMES_TO_INCLUDE.some((name) =>
-          device.name.toLowerCase().includes(name)
+          device.name.toLowerCase().includes(name),
         )
       ) {
         Object.keys(device.formats).forEach((path) => {
@@ -134,7 +133,7 @@ const App: React.FC = () => {
 
       if (
         CAMERA_NAMES_TO_INCLUDE.some((name) =>
-          curDevice.name.toLowerCase().includes(name)
+          curDevice.name.toLowerCase().includes(name),
         )
       ) {
         Object.keys(curDevice.formats).forEach((path) => {
@@ -143,22 +142,22 @@ const App: React.FC = () => {
             if (Object.keys(fmts).includes("MJPG")) {
               options.fps = options.fps.concat(
                 fmts["MJPG"].flatMap((fmt: Format) =>
-                  fmt.intervals.map((int: Interval) => int.denominator)
-                )
+                  fmt.intervals.map((int: Interval) => int.denominator),
+                ),
               );
               options.width = options.width.concat(
-                fmts["MJPG"].map((fmt: Format) => fmt.width)
+                fmts["MJPG"].map((fmt: Format) => fmt.width),
               );
             }
 
             if (Object.keys(fmts).includes("H264")) {
               options.fps = options.fps.concat(
                 fmts["H264"].flatMap((fmt: Format) =>
-                  fmt.intervals.map((int: Interval) => int.denominator)
-                )
+                  fmt.intervals.map((int: Interval) => int.denominator),
+                ),
               );
               options.width = options.width.concat(
-                fmts["H264"].map((fmt: Format) => fmt.width)
+                fmts["H264"].map((fmt: Format) => fmt.width),
               );
             }
           }
@@ -269,11 +268,24 @@ const App: React.FC = () => {
           >
             <Typography
               variant="h6"
-              sx={{ marginTop: MARGIN_TOP, width: BOX_WIDTH_FULL, maxHeight: "40px" }}
+              sx={{
+                marginTop: MARGIN_TOP,
+                width: BOX_WIDTH_FULL,
+                maxHeight: "40px",
+              }}
             >
               {HEADER_TITLE_RECORDING}
             </Typography>
-            <Tabs
+            <StitchedComponent
+              paths={mjpgPaths}
+              leftPath={leftPath}
+              rightPath={rightPath}
+              setRightPath={setRightPath}
+              setLeftPath={setLeftPath}
+              leftOptions={leftOptions}
+              rightOptions={rightOptions}
+            />
+            {/* <Tabs
               value={tabPanel}
               onChange={(_event: React.SyntheticEvent, newValue: number) => {
                 setTabPanel(newValue);
@@ -281,22 +293,17 @@ const App: React.FC = () => {
               sx={{ width: BOX_WIDTH_FULL, maxHeight: "40px" }}
             >
               <Tab label={TAB_LABEL_STITCHED} value={TAB_PANEL_STITCHED} />
-              <Tab label={TAB_LABEL_MULTI_CAM_INTERVAL} value={TAB_PANEL_MULTI_CAM} />
+              <Tab
+                label={TAB_LABEL_MULTI_CAM_INTERVAL}
+                value={TAB_PANEL_MULTI_CAM}
+              />
             </Tabs>
             <TabPanel value={tabPanel} index={TAB_PANEL_STITCHED}>
-              <StitchedComponent
-                paths={mjpgPaths}
-                leftPath={leftPath}
-                rightPath={rightPath}
-                setRightPath={setRightPath}
-                setLeftPath={setLeftPath}
-                leftOptions={leftOptions}
-                rightOptions={rightOptions}
-              />
+
             </TabPanel>
             <TabPanel value={tabPanel} index={TAB_PANEL_MULTI_CAM}>
               <MultiCamComponent paths={paths} />
-            </TabPanel>
+            </TabPanel> */}
           </Box>
         </Box>
 

@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 user = os.getenv('USER')
-VIDEO_DIRECTORY = f'/home/{user}/Videos/Discovery/'
+VIDEO_DIRECTORY = f'/home/{user}/Videos/DeepWaterVideos/'
 utils.dir_exists(VIDEO_DIRECTORY)
 
 stereoCommandHandler = CommandHandler()

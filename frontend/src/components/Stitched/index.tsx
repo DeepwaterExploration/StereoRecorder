@@ -1,12 +1,4 @@
-import {
-  Box,
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-} from "@mui/material";
+import { Box, Select, MenuItem, Button, InputAdornment } from "@mui/material";
 import { useState } from "react";
 import { checkStereo, startStereo, stopStereo } from "../../api/backend";
 
@@ -50,96 +42,100 @@ const StitchedComponent: React.FC<Stitchedprops> = (props) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "start",
         rowGap: "10px",
       }}
     >
-      <Typography>Stitched Stereo Setup</Typography>
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
           width: "100%",
-          columnGap: "5px",
+          gap: "5px",
         }}
       >
-        <FormControl sx={{ width: "50%" }}>
-          <InputLabel id="left-label">Left Camera Path</InputLabel>
-          <Select
-            value={leftPath ? leftPath : ""}
-            onChange={(e) => setLeftPath(e.target.value)}
-            labelId="left-label"
-          >
-            {paths
-              .filter((e) => e !== rightPath)
-              .map((item) => (
-                <MenuItem key={item} value={item}>
-                  {item}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <FormControl sx={{ width: "50%" }}>
-          <InputLabel id="right-label">Right Camera Path</InputLabel>
-          <Select
-            value={rightPath ? rightPath : ""}
-            onChange={(e) => setRightPath(e.target.value)}
-            labelId="right-label"
-          >
-            {paths
-              .filter((e) => e !== leftPath)
-              .map((item) => (
-                <MenuItem key={item} value={item}>
-                  {item}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-      </div>
-      <FormControl fullWidth>
-        <InputLabel id="compression-label">Compression Format</InputLabel>
-        <Select value="MJPG" labelId="compression-label" disabled>
+        <Select
+          value={leftPath ? leftPath : ""}
+          onChange={(e) => setLeftPath(e.target.value)}
+          startAdornment={
+            <InputAdornment position="start">Left Camera Path</InputAdornment>
+          }
+        >
+          {paths
+            .filter((e) => e !== rightPath)
+            .map((item) => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+        </Select>
+        <Select
+          value={rightPath ? rightPath : ""}
+          onChange={(e) => setRightPath(e.target.value)}
+          startAdornment={
+            <InputAdornment position="start">Right Camera Path</InputAdornment>
+          }
+        >
+          {paths
+            .filter((e) => e !== leftPath)
+            .map((item) => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+        </Select>
+        <Select
+          value="MJPG"
+          labelId="compression-label"
+          disabled
+          startAdornment={
+            <InputAdornment position="start">Compression</InputAdornment>
+          }
+        >
           <MenuItem value="MJPG">MJPG</MenuItem>
         </Select>
-      </FormControl>
-      <div
-        style={{
+      </Box>
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
           width: "100%",
-          columnGap: "5px",
+          gap: "5px",
         }}
       >
-        <FormControl sx={{ width: "50%" }}>
-          <InputLabel id="fps-label">Frame Rate</InputLabel>
-          <Select
-            labelId="fps-label"
-            value={fps != 0 ? fps : ""}
-            onChange={(e) => setFPS(() => parseInt(e.target.value as string))}
-          >
-            {validFPS.map((fps) => (
-              <MenuItem key={fps} value={fps.toString()}>
-                {fps}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl sx={{ width: "50%" }}>
-          <InputLabel id="fw-label">Frame Width</InputLabel>
-          <Select
-            labelId="fw-label"
-            value={width != 0 ? width : ""}
-            onChange={(e) => setWidth(() => parseInt(e.target.value as string))}
-          >
-            {validWidth.map((fw) => (
-              <MenuItem key={fw} value={fw.toString()}>
-                {fw}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-      <div
-        style={{
+        <Select
+          value={fps != 0 ? fps : ""}
+          onChange={(e) => setFPS(() => parseInt(e.target.value as string))}
+          startAdornment={
+            <InputAdornment position="start">Frame Rate</InputAdornment>
+          }
+        >
+          {validFPS.map((fps) => (
+            <MenuItem key={fps} value={fps.toString()}>
+              {fps}
+            </MenuItem>
+          ))}
+        </Select>
+        <Select
+          value={width != 0 ? width : ""}
+          onChange={(e) => setWidth(() => parseInt(e.target.value as string))}
+          startAdornment={
+            <InputAdornment position="start">Frame Width</InputAdornment>
+          }
+        >
+          {validWidth.map((fw) => (
+            <MenuItem key={fw} value={fw.toString()}>
+              {fw}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "row",
           width: "100%",
@@ -175,7 +171,7 @@ const StitchedComponent: React.FC<Stitchedprops> = (props) => {
         >
           Stop
         </Button>
-      </div>
+      </Box>
     </Box>
   );
 };
