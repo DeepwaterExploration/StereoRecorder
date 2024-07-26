@@ -12,5 +12,5 @@ deleteVideoFileEndpointFormat: str = f"/deleteVideoFile/{filenamePlaceHolder}"
 
 # Stereo Recording API
 getStereoRecordingStatusEndpoint: str = "/getStereoRecordingStatus"
-startStereoRecordingEndpoint: str = f"/startStereoRecording/<leftCameraIndex>/<rightCameraIndex>/<cameraFrameWidth>/<cameraFramerate>"
+startStereoRecordingEndpoint: str = "/startStereoRecording"
 endStereoRecordingEndpoint: str = "/endStereoRecordingEndpoint"
