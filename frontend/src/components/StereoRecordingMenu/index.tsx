@@ -109,6 +109,7 @@ const StereoRecordingMenu: React.FC<StereoRecordingMenuProps> = ({
 
   const endRecordingButtonOnClick = async () => {
     await endRecordingHandler();
+    await recordingStatusHandler();
   }
 
   // useEffects
