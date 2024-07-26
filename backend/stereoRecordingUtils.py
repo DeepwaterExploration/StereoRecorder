@@ -1,7 +1,7 @@
 import os
 import json
 from dataclasses import dataclass
-from backend.processHandler import ProcessHandler
+from processHandler import ProcessHandler
 
 @dataclass
 class StereoSettings:

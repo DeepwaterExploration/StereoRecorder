@@ -1,7 +1,7 @@
 import enumeration
 import v4l2
 import fcntl
-import backend.cameraDataUtils as cameraDataUtils
+import cameraDataUtils
 
 def fourcc2s(fourcc: int):
     res = ''

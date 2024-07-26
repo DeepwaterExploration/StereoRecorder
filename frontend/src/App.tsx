@@ -12,6 +12,7 @@ import {
   downloadVideoFile,
   fetchVideoFolderData,
 } from "./api/folderDataAPI";
+import StereoRecordingMenu from "./components/StereoRecordingMenu";
 
 // Extracted constants
 const BOX_BORDER_COLOR = "#46bae7";
@@ -129,13 +130,14 @@ const App: React.FC = () => {
             <Typography
               variant="h6"
               sx={{
-                marginTop: MARGIN_TOP,
+                margin: MARGIN_TOP,
                 width: BOX_WIDTH_FULL,
                 maxHeight: "40px",
               }}
             >
               {"Recording"}
             </Typography>
+            <StereoRecordingMenu />
           </Box>
         </Box>
 
