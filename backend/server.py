@@ -23,7 +23,6 @@ stereoRecorder = stereoRecordingUtils.StereoRecordingManager()
 def getCameraData():
     return jsonify(cameraDataUtils.get_devices()), 200
 
-
 # Folder Data API
 @app.route(endpoints.getVideoFolderDataEndpoint, methods=['GET'])
 def getVideoFolderData():

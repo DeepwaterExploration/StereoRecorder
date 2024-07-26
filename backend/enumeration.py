@@ -1,10 +1,11 @@
 # from DWE_OS_2 enumeration.py
 
 from dataclasses import dataclass
-import v4l2
-import fcntl
-import os
 from natsort import natsorted
+import fcntl
+import v4l2
+import os
+import logging
 
 
 @dataclass
@@ -36,6 +37,7 @@ def list_devices():
     devices_map: dict[str, DeviceInfo] = {}
     # traverse the directory that has the list of all devices
     devnames = os.listdir('/sys/class/video4linux/')
+    logging.debug(f"Devices found: {devnames}")
     for devname in devnames:
         devpath = f'/dev/{devname}'
         try:
