@@ -13,6 +13,8 @@ import {
   fetchVideoFolderData,
 } from "./api/folderDataAPI";
 import StereoRecordingMenu from "./components/StereoRecordingMenu";
+import { endStereoRecording, fetchStereoRecordingStatus, startStereoRecording } from "./api/stereoRecordingAPI";
+import { StereoSettings } from "./types/stereoRecordingTypes";
 
 // Extracted constants
 const BOX_BORDER_COLOR = "#46bae7";
@@ -25,6 +27,29 @@ const BOX_WIDTH_FORTY = "40%";
 const App: React.FC = () => {
   const [cameraData, setCameraData] = useState<Devices>({});
   const [videoFiles, setVideoFiles] = useState<FileDetail[]>([]);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
+
+  const recordingStatusHandler = async () => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchStereoRecordingStatus();
+        console.log(data);
+        setIsRecording(data);
+      } catch (error) {
+        console.error("Error fetching video files:", error);
+        setIsRecording(false);
+      }
+    };
+    fetchData();
+  };
+
+  const startRecordingHandler = async (recordingSettings: StereoSettings) => {
+    await startStereoRecording(recordingSettings);
+  };
+
+  const endRecordingHandler = async () => {
+    await endStereoRecording();
+  };
 
   /** First page load useEffects: **/
 
@@ -53,6 +78,11 @@ const App: React.FC = () => {
       }
     };
     fetchData();
+  }, []);
+
+  // update recording status
+  useEffect(() => {
+    recordingStatusHandler();
   }, []);
 
   return (
@@ -127,17 +157,13 @@ const App: React.FC = () => {
               flexDirection: "row",
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                margin: MARGIN_TOP,
-                width: BOX_WIDTH_FULL,
-                maxHeight: "40px",
-              }}
-            >
-              {"Recording"}
-            </Typography>
-            <StereoRecordingMenu />
+            <StereoRecordingMenu
+              cameraData={cameraData}
+              recordingStatus={isRecording}
+              recordingStatusHandler={recordingStatusHandler}
+              startRecordingHandler={startRecordingHandler}
+              endRecordingHandler={endRecordingHandler}
+            />
           </Box>
         </Box>
 

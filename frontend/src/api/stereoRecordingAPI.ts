@@ -1,69 +1,81 @@
 import { StereoSettings } from "../types/stereoRecordingTypes";
-import { endStereoRecordingEndpoint, getStereoRecordingStatusEndpoint, startStereoRecordingEndpoint } from "./backendServerAPI";
+import {
+  BackendServerURL,
+  endStereoRecordingEndpoint,
+  getStereoRecordingStatusEndpoint,
+  startStereoRecordingEndpoint,
+} from "./backendServerAPI";
 
 // Function to start stereo recording
-export const startStereoRecording = async (cameraSettings: StereoSettings): Promise<{ message: string; filename: string }> => {
+export const startStereoRecording = async (
+  recordingSettings: StereoSettings,
+): Promise<{ message: string; filename: string }> => {
   try {
-    const response = await fetch(startStereoRecordingEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      BackendServerURL + startStereoRecordingEndpoint,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recordingSettings),
       },
-      body: JSON.stringify(cameraSettings),
-    });
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to start stereo recording');
+      throw new Error("Failed to start stereo recording");
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error starting stereo recording:', error);
+    console.error("Error starting stereo recording:", error);
     throw error;
   }
 };
 
 // Function to end stereo recording
-export const endStereoRecording = async (): Promise<{ message: string }> => {
+export const endStereoRecording = async (): Promise<boolean> => {
   try {
-    const response = await fetch(endStereoRecordingEndpoint, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      BackendServerURL + endStereoRecordingEndpoint,
+      {
+        method: "GET",
       },
-    });
+    );
 
-    if (!response.ok) {
-      throw new Error('Failed to end stereo recording');
+    console.log(response);
+
+    if (response.status == 200) {
+      return true;
     }
 
-    const data = await response.json();
-    return data;
+    return false;
   } catch (error) {
-    console.error('Error ending stereo recording:', error);
-    throw error;
+    console.error("Error fetching stereo recording status:", error);
+    return false;
   }
 };
 
 // Function to get the stereo recording status
-export const fetchStereoRecordingStatus = async (): Promise<{ status: string }> => {
+export const fetchStereoRecordingStatus = async (): Promise<boolean> => {
   try {
-    const response = await fetch(getStereoRecordingStatusEndpoint, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      BackendServerURL + getStereoRecordingStatusEndpoint,
+      {
+        method: "GET",
       },
-    });
+    );
 
-    if (!response.ok) {
-      throw new Error('Failed to get stereo recording status');
+    console.log(response);
+
+    if (response.status == 200) {
+      return true;
     }
 
-    const data = await response.json();
-    return data;
+    return false;
   } catch (error) {
-    console.error('Error fetching stereo recording status:', error);
-    throw error;
+    console.error("Error fetching stereo recording status:", error);
+    return false;
   }
 };

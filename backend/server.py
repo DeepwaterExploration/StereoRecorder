@@ -3,6 +3,7 @@ from flask import Flask, jsonify, send_from_directory, request
 from flask_cors import CORS
 import datetime
 import json
+import sys
 
 # local imports
 import globalUtils
@@ -46,7 +47,9 @@ def delete_file(filename):
 # Stereo Recording API
 @app.route(endpoints.getStereoRecordingStatusEndpoint, methods=['GET'])
 def getStereoRecordingStatus():
-    return stereoRecorder.recordingStatus()
+    if(stereoRecorder.recordingStatus()):
+        return "", 200
+    return "", 404
 
 # POST REQUEST
 @app.route(endpoints.startStereoRecordingEndpoint, methods=['POST'])
@@ -55,10 +58,6 @@ def startStereoRecording():
         # Parse incoming camera settings
         data = request.get_json()
         cameraSettings = stereoRecordingUtils.StereoSettings(**data)
-        
-        # Save incoming camera settings to file
-        with open(globalUtils.SETTINGS_FILE_PATH, 'w') as settings_file:
-            json.dump(data, settings_file)
         
         # generate output filename
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -78,8 +77,9 @@ def startStereoRecording():
 
 @app.route(endpoints.endStereoRecordingEndpoint, methods=['GET'])
 def endStereoRecording():
-    return stereoRecorder.endRecording()
-
+    if (stereoRecorder.endRecording()):
+        return "", 200
+    return "", 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8669)

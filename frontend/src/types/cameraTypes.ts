@@ -1,4 +1,4 @@
-export interface Resolution {
+export interface ResolutionSpecs {
   width: number;
   height: number;
   fps: number[];

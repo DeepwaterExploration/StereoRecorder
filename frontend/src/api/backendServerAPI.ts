@@ -23,4 +23,4 @@ export const deleteVideoFileEndpoint = (filename: string): string => {
 export const getStereoRecordingStatusEndpoint: string =
   "/getStereoRecordingStatus";
 export const startStereoRecordingEndpoint: string = "/startStereoRecording"; // POST Request
-export const endStereoRecordingEndpoint: string = "/endStereoRecordingEndpoint";
+export const endStereoRecordingEndpoint: string = "/endStereoRecording";
