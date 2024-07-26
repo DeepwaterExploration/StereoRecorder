@@ -1,6 +1,6 @@
 // ENDPOINTS
 
-export const BackendServerURL = "http://localhost:8669";
+export const BackendServerURL = `http://${window.location.hostname}:8669`;
 
 // Camera Data API
 export const getCameraDataEndpoint = "/getCameraData";
