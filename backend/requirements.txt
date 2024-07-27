@@ -1,0 +1,4 @@
+natsort
+Flask
+flask-cors
+waitress

@@ -13,7 +13,11 @@ import {
   fetchVideoFolderData,
 } from "./api/folderDataAPI";
 import StereoRecordingMenu from "./components/StereoRecordingMenu";
-import { endStereoRecording, fetchStereoRecordingStatus, startStereoRecording } from "./api/stereoRecordingAPI";
+import {
+  endStereoRecording,
+  fetchStereoRecordingStatus,
+  startStereoRecording,
+} from "./api/stereoRecordingAPI";
 import { StereoSettings } from "./types/stereoRecordingTypes";
 
 // Extracted constants

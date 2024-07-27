@@ -4,25 +4,28 @@ const CAMERA_NAMES_TO_INCLUDE = ["explore", "stellar"];
 const DEFAULT_FRAMERATE = 60;
 const DEFAULT_FRAMEWIDTH = 1600;
 
-export function saveCameraSettingsLocalStorage(framerate: string, framewidth: string) {
-  localStorage.setItem('framerate', framerate);
-  localStorage.setItem('framewidth', framewidth);
-  console.log(getCameraSettingsLocalStorage())
+export function saveCameraSettingsLocalStorage(
+  framerate: string,
+  framewidth: string,
+) {
+  localStorage.setItem("framerate", framerate);
+  localStorage.setItem("framewidth", framewidth);
+  console.log(getCameraSettingsLocalStorage());
 }
 
 export function getCameraSettingsLocalStorage() {
   const defaultFramerate = DEFAULT_FRAMERATE;
   const defaultFramewidth = DEFAULT_FRAMEWIDTH;
 
-  const framerate = localStorage.getItem('framerate') || defaultFramerate;
-  const framewidth = localStorage.getItem('framewidth') || defaultFramewidth;
+  const framerate = localStorage.getItem("framerate") || defaultFramerate;
+  const framewidth = localStorage.getItem("framewidth") || defaultFramewidth;
 
   // Save default values back to localStorage if they were not already set
-  if (!localStorage.getItem('framerate')) {
-    localStorage.setItem('framerate', defaultFramerate.toString());
+  if (!localStorage.getItem("framerate")) {
+    localStorage.setItem("framerate", defaultFramerate.toString());
   }
-  if (!localStorage.getItem('framewidth')) {
-    localStorage.setItem('framewidth', defaultFramewidth.toString());
+  if (!localStorage.getItem("framewidth")) {
+    localStorage.setItem("framewidth", defaultFramewidth.toString());
   }
 
   return {
@@ -37,11 +40,7 @@ export function getDevicePathsWithName(cameraData: Devices, name: string) {
 
   Object.keys(cameraData).forEach((cam) => {
     const device = cameraData[cam];
-    if (
-      [name].some((name) =>
-        device.name.toLowerCase().includes(name),
-      )
-    ) {
+    if ([name].some((name) => device.name.toLowerCase().includes(name))) {
       Object.keys(device.formats).forEach((path) => {
         const formats = Object.keys(device.formats[path]);
 

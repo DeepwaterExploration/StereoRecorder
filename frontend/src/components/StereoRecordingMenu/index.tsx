@@ -33,7 +33,7 @@ const StereoRecordingMenu: React.FC<StereoRecordingMenuProps> = ({
   recordingStatus,
   recordingStatusHandler,
   startRecordingHandler,
-  endRecordingHandler
+  endRecordingHandler,
 }) => {
   const [availableDevices, setAvailableDevices] = useState<string[]>([]);
 
@@ -92,53 +92,57 @@ const StereoRecordingMenu: React.FC<StereoRecordingMenuProps> = ({
   };
 
   const startRecordingButtonOnClick = async () => {
-    if (leftCameraSelection && rightCameraSelection && framerateSelection && frameWidthSelection) {
+    if (
+      leftCameraSelection &&
+      rightCameraSelection &&
+      framerateSelection &&
+      frameWidthSelection
+    ) {
       const settings: StereoSettings = {
         leftCameraDevicePath: leftCameraSelection,
         rightCameraDevicePath: rightCameraSelection,
         cameraFramerate: framerateSelection,
-        cameraFrameWidth: frameWidthSelection
+        cameraFrameWidth: frameWidthSelection,
       };
 
-      saveCameraSettingsLocalStorage(framerateSelection, frameWidthSelection)
+      saveCameraSettingsLocalStorage(framerateSelection, frameWidthSelection);
 
       await startRecordingHandler(settings);
       await recordingStatusHandler();
     }
-  }
+  };
 
   const endRecordingButtonOnClick = async () => {
     await endRecordingHandler();
     await recordingStatusHandler();
-  }
+  };
 
   // useEffects
 
   useEffect(() => {
-    if(framerateSelection !== "" && frameWidthSelection !== "") {
-      saveCameraSettingsLocalStorage(framerateSelection, frameWidthSelection)
+    if (framerateSelection !== "" && frameWidthSelection !== "") {
+      saveCameraSettingsLocalStorage(framerateSelection, frameWidthSelection);
     }
-  }, [frameWidthSelection, framerateSelection])
+  }, [frameWidthSelection, framerateSelection]);
 
   // set selection defaults
   useEffect(() => {
-    const leaderCam = getDevicePathsWithName(cameraData, "leader")
-    if(leaderCam.length > 0) {
-      setLeftCameraSelection(leaderCam[0])
+    const leaderCam = getDevicePathsWithName(cameraData, "leader");
+    if (leaderCam.length > 0) {
+      setLeftCameraSelection(leaderCam[0]);
     }
 
-    const followerCam = getDevicePathsWithName(cameraData, "follow")
-    if(followerCam.length > 0) {
-      setRightCameraSelection(followerCam[0])
+    const followerCam = getDevicePathsWithName(cameraData, "follow");
+    if (followerCam.length > 0) {
+      setRightCameraSelection(followerCam[0]);
     }
 
     // use local storage to save user settings for framerate and framewidth
-    if(leaderCam.length > 0 && followerCam.length > 0) {
+    if (leaderCam.length > 0 && followerCam.length > 0) {
       const localStorageSettings = getCameraSettingsLocalStorage();
       setFramerateSelection(localStorageSettings.framerate);
       setFrameWidthSelection(localStorageSettings.framewidth);
     }
-
   }, [cameraData, frameWidthSelection, framerateSelection]);
 
   // get available paths
@@ -196,9 +200,7 @@ const StereoRecordingMenu: React.FC<StereoRecordingMenuProps> = ({
                 onLeftSelectionChange(event.target.value);
               }}
             >
-              <MenuItem value={"None"}>
-                {"None"}
-              </MenuItem>
+              <MenuItem value={"None"}>{"None"}</MenuItem>
               {getUnusedDeviceSelectionsLeft().map((item) => (
                 <MenuItem key={item} value={item}>
                   {item}
@@ -221,9 +223,7 @@ const StereoRecordingMenu: React.FC<StereoRecordingMenuProps> = ({
                 onRightSelectionChange(event.target.value);
               }}
             >
-              <MenuItem value={"None"}>
-                {"None"}
-              </MenuItem>
+              <MenuItem value={"None"}>{"None"}</MenuItem>
               {getUnusedDeviceSelectionsRight().map((item) => (
                 <MenuItem key={item} value={item}>
                   {item}
@@ -312,8 +312,18 @@ const StereoRecordingMenu: React.FC<StereoRecordingMenuProps> = ({
             justifyContent: "center",
           }}
         >
-          <Button disabled={recordingStatus} onClick={startRecordingButtonOnClick}>Start</Button>
-          <Button disabled={!recordingStatus} onClick={endRecordingButtonOnClick}>Stop</Button>
+          <Button
+            disabled={recordingStatus}
+            onClick={startRecordingButtonOnClick}
+          >
+            Start
+          </Button>
+          <Button
+            disabled={!recordingStatus}
+            onClick={endRecordingButtonOnClick}
+          >
+            Stop
+          </Button>
         </Box>
       </Box>
     </>
