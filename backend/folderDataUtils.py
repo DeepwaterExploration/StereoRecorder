@@ -29,6 +29,14 @@ def directoryExists(directory: str):
         print(f"Created video directory: {directory}")
     else:
         print(f"Video directory already exists: {directory}")
+
+def get_directory_size(directory):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(directory):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            total_size += os.path.getsize(fp)
+    return total_size
         
 def folderDataList(directory: str):
     files = os.listdir(directory)
@@ -37,8 +45,24 @@ def folderDataList(directory: str):
         file_path = os.path.join(directory, file)
         file_stat = os.stat(file_path)
         creation_time = datetime.datetime.fromtimestamp(file_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
-        file_size = formatSize(file_stat.st_size)
-        file_info.append({'name': file, 'creation_date': creation_time, 'size': file_size})
+        if os.path.isdir(file_path):
+            item_type = 'directory'
+            total_size = get_directory_size(file_path)
+            file_size = formatSize(total_size)
+        else:
+            item_type = 'file'
+            file_size = formatSize(file_stat.st_size)
+        
+        file_info.append({
+            'name': file,
+            'creation_date': creation_time,
+            'size': file_size,
+            'type': item_type
+        })
+    
+    # Sort the file_info list by creation_date, newest to oldest
+    file_info.sort(key=lambda x: datetime.datetime.strptime(x['creation_date'], '%Y-%m-%d %H:%M:%S'), reverse=True)
+    
     return file_info
 
 def deleteFileInDirectory(directory: str, filename: str):

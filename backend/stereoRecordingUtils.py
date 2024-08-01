@@ -1,6 +1,9 @@
 import os
+import datetime
 from dataclasses import dataclass
 from processHandler import ProcessHandler
+
+import folderDataUtils
 
 @dataclass
 class StereoSettings:
@@ -31,9 +34,34 @@ class StereoRecordingManager:
         )
         
         return command
+    
+    def stereoGSTUnstitchedVideoCommand(self, leftCameraDevicePath, rightCameraDevicePath, cameraFrameWidth, cameraFramerate, outputDirectory, filename):
+        # Construct the output file paths
+
+        new_directory = os.path.join(
+            outputDirectory,
+            datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        )
+        
+        folderDataUtils.directoryExists(new_directory)
+        
+        leftOutputFilePath = os.path.join(new_directory, f'left_{filename}.avi')
+        rightOutputFilePath = os.path.join(new_directory, f'right_{filename}.avi')
+
+        # Construct the command
+        command = (
+            "gst-launch-1.0 -v "
+            f"v4l2src device={leftCameraDevicePath} ! image/jpeg,width={cameraFrameWidth},framerate={cameraFramerate}/1 ! "
+            f"videorate ! queue ! avimux ! filesink location={leftOutputFilePath} "
+            f"v4l2src device={rightCameraDevicePath} ! image/jpeg,width={cameraFrameWidth},framerate={cameraFramerate}/1 ! "
+            f"videorate ! queue ! avimux ! filesink location={rightOutputFilePath} "
+        )
+                
+        return command
 
     def startRecording(self, settings: StereoSettings, outputDirectory: str, filename: str) -> bool:
-        command = self.stereoGSTCompositedVideoCommand(
+        # Change to whatever system you want to use
+        command = self.stereoGSTUnstitchedVideoCommand(
             settings.leftCameraDevicePath,
             settings.rightCameraDevicePath,
             settings.cameraFrameWidth,

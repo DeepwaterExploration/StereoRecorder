@@ -7,7 +7,7 @@ import {
   Box,
   Button,
 } from "@mui/material";
-import { Delete, Download } from "@mui/icons-material";
+import { Delete, Download, Folder } from "@mui/icons-material";
 import { FileDetail } from "../../types/folderTypes";
 
 interface FolderListProps {
@@ -57,7 +57,18 @@ const FolderList: React.FC<FolderListProps> = ({
             }}
           >
             <ListItemText
-              primary={file.name}
+              primary={
+                <Box display="flex" alignItems="center">
+                  {file.type === 'directory' ? (
+                    <>
+                      <Folder style={{ marginRight: 8 }} />
+                      {file.name}
+                    </>
+                  ) : (
+                    file.name
+                  )}
+                </Box>
+              }
               secondary={`Created on: ${file.creation_date} | Size: ${file.size}`}
             />
             <div>

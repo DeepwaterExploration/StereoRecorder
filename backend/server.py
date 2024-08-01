@@ -1,7 +1,10 @@
 # external imports
-from flask import Flask, jsonify, send_from_directory, request
+from flask import Flask, jsonify, send_from_directory, request, send_file, abort
 from flask_cors import CORS
 import datetime
+import os
+import shutil
+import tempfile
 
 # local imports
 import globalUtils
@@ -27,18 +30,39 @@ def getVideoFolderData():
     return jsonify(folderDataUtils.folderDataList(globalUtils.VIDEO_DIRECTORY)), 200
 
 @app.route(endpoints.downloadVideoFileEndpointFormat)
-def downloadVideoFile(filename):
-    return send_from_directory(globalUtils.VIDEO_DIRECTORY, filename)
+def download_file_or_folder(filename):
+    full_path = os.path.join(globalUtils.VIDEO_DIRECTORY, filename)
+
+    if os.path.isdir(full_path):
+        # Create a temporary ZIP file
+        temp_dir = tempfile.mkdtemp()
+        zip_path = os.path.join(temp_dir, f"{filename}.zip")
+        shutil.make_archive(zip_path[:-4], 'zip', full_path)
+
+        return send_file(zip_path, as_attachment=True, download_name=f"{os.path.basename(filename)}.zip")
+
+    elif os.path.isfile(full_path):
+        return send_from_directory(globalUtils.VIDEO_DIRECTORY, filename)
+
+    else:
+        abort(404, description="Resource not found")
 
 @app.route(endpoints.deleteVideoFileEndpointFormat, methods=['GET'])
 def delete_file(filename):
-    success = folderDataUtils.deleteFileInDirectory(
-        directory=globalUtils.VIDEO_DIRECTORY,
-        filename=filename
-    )
-    if success:
-        return "", 200
-    return "", 500
+    full_path = os.path.join(globalUtils.VIDEO_DIRECTORY, filename)
+
+    if os.path.exists(full_path):
+        try:
+            if os.path.isfile(full_path):
+                os.remove(full_path)
+            elif os.path.isdir(full_path):
+                shutil.rmtree(full_path)
+            return "", 200
+        except Exception as e:
+            print(f"Error deleting {full_path}: {e}")
+            return "", 500
+    else:
+        abort(404, description="Resource not found")
 
 
 # Stereo Recording API
