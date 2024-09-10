@@ -1,5 +1,5 @@
 # external imports
-from flask import Flask, jsonify, send_from_directory, request
+from flask import Flask, jsonify, send_from_directory, request, send_file
 from flask_cors import CORS
 import datetime
 
@@ -9,6 +9,7 @@ import cameraDataUtils
 import folderDataUtils
 import stereoRecordingUtils
 import serverEndpoints as endpoints
+import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -28,7 +29,17 @@ def getVideoFolderData():
 
 @app.route(endpoints.downloadVideoFileEndpointFormat)
 def downloadVideoFile(filename):
-    return send_from_directory(globalUtils.VIDEO_DIRECTORY, filename)
+    if not os.path.isdir(os.path.join(globalUtils.VIDEO_DIRECTORY, filename)):
+        return send_from_directory(globalUtils.VIDEO_DIRECTORY, filename)
+    else:
+        memory_file = folderDataUtils.zipFolder(globalUtils.VIDEO_DIRECTORY, filename)
+        if memory_file:
+            return send_file(
+                memory_file,
+                download_name=f"{filename}.zip",
+                as_attachment=True
+            )
+        return "", 404
 
 @app.route(endpoints.deleteVideoFileEndpointFormat, methods=['GET'])
 def delete_file(filename):

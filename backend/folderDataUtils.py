@@ -1,5 +1,7 @@
 import os
 import datetime
+import zipfile
+import io
 
 def formatSize(sizeInBytes):
     """
@@ -30,16 +32,41 @@ def directoryExists(directory: str):
     else:
         print(f"Video directory already exists: {directory}")
         
+def getFolderSize(folder_path):
+    """
+    Calculate the total size of a folder, including all subdirectories and files.
+    
+    Parameters:
+    folder_path (str): The path to the folder.
+    
+    Returns:
+    int: The total size of the folder in bytes.
+    """
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(folder_path):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            total_size += os.path.getsize(file_path)
+    return total_size
+        
 def folderDataList(directory: str):
-    files = os.listdir(directory)
-    file_info = []
-    for file in files:
-        file_path = os.path.join(directory, file)
-        file_stat = os.stat(file_path)
-        creation_time = datetime.datetime.fromtimestamp(file_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
-        file_size = formatSize(file_stat.st_size)
-        file_info.append({'name': file, 'creation_date': creation_time, 'size': file_size})
-    return file_info
+    items = os.listdir(directory)
+    item_info = []
+    for item in items:
+        item_path = os.path.join(directory, item)
+        item_stat = os.stat(item_path)
+        creation_time = datetime.datetime.fromtimestamp(item_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
+        
+        if os.path.isdir(item_path):
+            item_type = 'folder'
+            item_size = getFolderSize(item_path)
+        else:
+            item_type = 'file'
+            item_size = item_stat.st_size
+        
+        formatted_size = formatSize(item_size)
+        item_info.append({'name': item, 'creation_date': creation_time, 'size': formatted_size, 'type': item_type})
+    return item_info
 
 def deleteFileInDirectory(directory: str, filename: str):
     file_path = os.path.join(directory, filename)
@@ -50,3 +77,19 @@ def deleteFileInDirectory(directory: str, filename: str):
         except Exception:
             return False
     return False
+
+def zipFolder(directory: str, foldername: str):
+    folder_path = os.path.join(directory, foldername)
+    if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
+        return None
+
+    memory_file = io.BytesIO()
+    with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, _, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, folder_path)
+                zipf.write(file_path, arcname)
+
+    memory_file.seek(0)
+    return memory_file

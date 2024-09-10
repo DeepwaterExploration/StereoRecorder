@@ -57,8 +57,10 @@ const FolderList: React.FC<FolderListProps> = ({
             }}
           >
             <ListItemText
-              primary={file.name}
-              secondary={`Created on: ${file.creation_date} | Size: ${file.size}`}
+              primary={file.type === 'file' ? file.name : <b>{file.name}/</b>}
+              secondary={
+                file.type === 'file' ? `Created on: ${file.creation_date} | Size: ${file.size}` : `Folder Created on: ${file.creation_date} | Size: ${file.size}`
+              }
             />
             <div>
               <IconButton
