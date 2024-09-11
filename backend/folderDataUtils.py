@@ -55,7 +55,7 @@ def folderDataList(directory: str):
     for item in items:
         item_path = os.path.join(directory, item)
         item_stat = os.stat(item_path)
-        creation_time = datetime.datetime.fromtimestamp(item_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
+        creation_time = datetime.datetime.fromtimestamp(item_stat.st_ctime)
         
         if os.path.isdir(item_path):
             item_type = 'folder'
@@ -65,7 +65,20 @@ def folderDataList(directory: str):
             item_size = item_stat.st_size
         
         formatted_size = formatSize(item_size)
-        item_info.append({'name': item, 'creation_date': creation_time, 'size': formatted_size, 'type': item_type})
+        item_info.append({
+            'name': item, 
+            'creation_date': creation_time, 
+            'size': formatted_size, 
+            'type': item_type
+        })
+    
+    # Sort the list by creation_date
+    item_info.sort(key=lambda x: x['creation_date'], reverse=True)
+    
+    # Format the datetime objects to strings after sorting
+    for item in item_info:
+        item['creation_date'] = item['creation_date'].strftime('%Y-%m-%d %H:%M:%S')
+    
     return item_info
 
 def deleteFileInDirectory(directory: str, filename: str):
